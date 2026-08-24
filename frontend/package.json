@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "frontend",
+    "slug": "frontend",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "socialapp",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.yipl.socialapp",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-router",
+      "expo-status-bar"
+    ]
+  },
+  "main": "expo-router/entry",
+  "name": "frontend",
+  "version": "1.0.0",
+  "scripts": {},
+  "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
+    "@hookform/resolvers": "^5.7.1",
+    "axios": "^1.19.0",
+    "babel-preset-expo": "~57.0.0",
+    "expo": "~57.0.7",
+    "expo-constants": "~57.0.8",
+    "expo-linking": "~57.0.4",
+    "expo-navigation-bar": "~57.0.2",
+    "expo-router": "~57.0.9",
+    "expo-secure-store": "~57.0.1",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-hook-form": "^7.84.0",
+    "react-native": "0.86.2",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-web": "^0.21.2",
+    "socket.io-client": "^4.8.3",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3"
+  }
+}
