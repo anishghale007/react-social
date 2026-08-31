@@ -17,7 +17,10 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { SearchQueryDto } from './dto/search-query.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Posts')
+@ApiBearerAuth('access-token')
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}

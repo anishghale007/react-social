@@ -12,7 +12,10 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChatService } from './chat.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { PaginationQueryDto } from '../posts/dto/pagination-query.dto'; // reused, already generic
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Chat')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 export class ChatController {
