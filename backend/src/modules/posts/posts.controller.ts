@@ -16,6 +16,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { SearchQueryDto } from './dto/search-query.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -27,7 +28,6 @@ export class PostsController {
     return this.postsService.create(user.id, dto);
   }
 
-  // Public feed — no guard, so logged-out users could still browse in the future
   @Get()
   findAll(@Query() query: PaginationQueryDto) {
     return this.postsService.findAll(query);
@@ -42,9 +42,19 @@ export class PostsController {
     return this.postsService.findFollowingFeed(user.id, query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(id);
+  @Get('search')
+  searchPosts(@Query() query: SearchQueryDto) {
+    if (!query.q?.trim()) {
+      return {
+        data: [],
+        meta: { page: 1, limit: 10, total: 0, totalPages: 0 },
+      };
+    }
+    return this.postsService.searchPosts(
+      query.q.trim(),
+      query.page,
+      query.limit,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -54,6 +64,11 @@ export class PostsController {
     @Query() query: PaginationQueryDto,
   ) {
     return this.postsService.findByUser(userId, query);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.postsService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -109,15 +124,5 @@ export class PostsController {
     @CurrentUser() user: { id: string },
   ) {
     return this.postsService.deleteComment(commentId, user.id);
-  }
-
-  @Get('search')
-  searchPosts(@Query('q') q: string, @Query() query: PaginationQueryDto) {
-    if (!q?.trim())
-      return {
-        data: [],
-        meta: { page: 1, limit: 10, total: 0, totalPages: 0 },
-      };
-    return this.postsService.searchPosts(q.trim(), query.page, query.limit);
   }
 }
