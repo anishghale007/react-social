@@ -22,6 +22,8 @@ interface ChatState {
   sendMessage: (conversationId: string, content: string) => void;
   markAsRead: (conversationId: string) => Promise<void>;
   unreadCount: () => number;
+  typingUsers: Record<string, boolean>; // conversationId -> is-someone-else-typing
+  emitTyping: (conversationId: string, isTyping: boolean) => void;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
@@ -30,6 +32,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   activeConversationId: null,
   activeMessages: [],
   isConnected: false,
+  typingUsers: {},
 
   connect: async () => {
     if (get().socket?.connected) return;
@@ -63,6 +66,15 @@ export const useChatStore = create<ChatState>((set, get) => ({
       if (state.activeConversationId === message.conversationId) {
         state.markAsRead(message.conversationId);
       }
+    });
+
+    socket.on("userTyping", (data: { userId: string; isTyping: boolean }) => {
+      set((state) => ({
+        typingUsers: {
+          ...state.typingUsers,
+          [state.activeConversationId ?? ""]: data.isTyping,
+        },
+      }));
     });
 
     set({ socket, isConnected: true });
@@ -117,4 +129,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   unreadCount: () => get().conversations.filter((c) => c.isUnread).length,
+
+  emitTyping: (conversationId: string, isTyping: boolean) => {
+    get().socket?.emit("typing", { conversationId, isTyping });
+  },
 }));

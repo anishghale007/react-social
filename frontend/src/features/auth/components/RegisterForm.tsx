@@ -1,18 +1,25 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useRouter } from 'expo-router';
-import { useAuthStore } from '../../../store/authStore';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useRouter } from "expo-router";
+import { useAuthStore } from "../../../store/authStore";
 
 const registerSchema = z.object({
-  email: z.email('Enter a valid email'),
+  email: z.email("Enter a valid email"),
   username: z
     .string()
-    .min(3, 'At least 3 characters')
+    .min(3, "At least 3 characters")
     .max(20)
-    .regex(/^[a-zA-Z0-9_]+$/, 'Letters, numbers, underscores only'),
-  password: z.string().min(8, 'At least 8 characters'),
+    .regex(/^[a-zA-Z0-9_]+$/, "Letters, numbers, underscores only"),
+  password: z.string().min(8, "At least 8 characters"),
 });
 
 type RegisterForm = z.infer<typeof registerSchema>;
@@ -24,12 +31,15 @@ export default function RegisterForm() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { email: "", username: "", password: "" },
+  });
 
   const onSubmit = async (data: RegisterForm) => {
     try {
       await register(data);
-      router.replace('/(main)');
+      router.replace("/");
     } catch {
       // error already captured in store
     }
@@ -53,7 +63,9 @@ export default function RegisterForm() {
           />
         )}
       />
-      {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
+      {errors.email && (
+        <Text style={styles.errorText}>{errors.email.message}</Text>
+      )}
 
       <Controller
         control={control}
@@ -68,7 +80,9 @@ export default function RegisterForm() {
           />
         )}
       />
-      {errors.username && <Text style={styles.errorText}>{errors.username.message}</Text>}
+      {errors.username && (
+        <Text style={styles.errorText}>{errors.username.message}</Text>
+      )}
 
       <Controller
         control={control}
@@ -83,15 +97,25 @@ export default function RegisterForm() {
           />
         )}
       />
-      {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+      {errors.password && (
+        <Text style={styles.errorText}>{errors.password.message}</Text>
+      )}
 
       {error && <Text style={styles.errorText}>{error}</Text>}
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)} disabled={isLoading}>
-        {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Sign Up</Text>}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSubmit(onSubmit)}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Sign Up</Text>
+        )}
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+      <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
         <Text style={styles.link}>Already have an account? Log in</Text>
       </TouchableOpacity>
     </View>
@@ -99,11 +123,29 @@ export default function RegisterForm() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' },
-  title: { fontSize: 28, fontWeight: '700', marginBottom: 32, color: '#111' },
-  input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 10, padding: 14, marginBottom: 12, fontSize: 16 },
-  button: { backgroundColor: '#111', borderRadius: 10, padding: 16, alignItems: 'center', marginTop: 8 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  errorText: { color: '#e53935', marginBottom: 8, fontSize: 13 },
-  link: { textAlign: 'center', marginTop: 20, color: '#555' },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 24,
+    backgroundColor: "#fff",
+  },
+  title: { fontSize: 28, fontWeight: "700", marginBottom: 32, color: "#111" },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 12,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: "#111",
+    borderRadius: 10,
+    padding: 16,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  errorText: { color: "#e53935", marginBottom: 8, fontSize: 13 },
+  link: { textAlign: "center", marginTop: 20, color: "#555" },
 });
